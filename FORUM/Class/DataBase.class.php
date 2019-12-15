@@ -16,7 +16,7 @@ class DataBase
     {
         try {
             if (is_null($this->Connection) || empty($this->Connection)) {
-                $this->Connection = new PDO($this->DB_driver.':host='.$this->DB_host.';dbname='.$this->DB_database, $this->DB_user_name, $this->DB_user_password);
+                $this->Connection = new PDO($this->DB_driver.':host='.$this->DB_host.';dbname='.$this->DB_database, $this->DB_user_name, $this->DB_user_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'));
             }
         } catch (Exception $e) {
             $this->Error = 'ERREUR lors l\'ouverture du connexion => ' . $e->getFile() . ' L.' . $e->getLine() . ' : ' . $e->getMessage();
@@ -42,7 +42,7 @@ class DataBase
             return null;
         }
         else {
-            return $this->PreparedStatement->fetch();
+            return $this->PreparedStatement->fetchAll();
         }
     }
 

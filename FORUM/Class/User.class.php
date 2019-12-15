@@ -7,12 +7,12 @@
 class User
 {
 
-	public $UserId;
-	public $Name;
-	public $Username;
-	public $Email;
-	public $Avatar;
-	public $LastConnectionDatetime;
+	private $UserId;
+	private $Name;
+	private $Username;
+	private $Email;
+	private $Avatar;
+	private $LastConnectionDatetime;
 
 	function  __construct()
 	{
@@ -92,30 +92,63 @@ class User
 		$DB = new DataBase();
 		$request = "SELECT `id_user`, `full_name`, `email`, `avatar`, `username`, `lastconnection` FROM `user` WHERE `email`=? and `password`=?";
 		$param = array($email,$password);
-		return $DB->LoadData($request,$param);
-	}
-
-	public function ModifyInfo($name,$username,$avatar)
-	{
-		$request = "insert into user values(?,?,?,?,?,?,?,?)";
+		$result = $DB->LoadData($request,$param);
+		if ($result==null) {
+			return null;
+		}
+		else{
+			$this->UpdateLastConnection($result[0]);
+			return $result;
+		}
 		
 	}
 
-	public function UpdateLastConnection($NewOne)
+	public function UpdateLastConnection($id)
 	{
+		$DB = new DataBase();
+		$request = "UPDATE `user` SET `lastconnection`=CURRENT_TIMESTAMP() WHERE `id_user`=? ";
+		$param = array($id);
+		$DB->ExecuteData($request,$param);
 		
 	}
 
-	public function ChangePassword($oldPassword,$newPassword)
+	public function ModifyInfo()
 	{
+		$DB = new DataBase();
+		$request = "UPDATE `user` SET `full_name`=?,`avatar`=?,`username`=? WHERE `id_user`=?";
+		$param = array($this->Name,$this->Avatar,$this->Username,$this->UserId);
+		return $DB->ExecuteData($request,$param);
+		
+	}
 
+	public function isPasswordCorrect($password)
+	{
+		$DB = new DataBase();
+		$request = "	SELECT id_user FROM user WHERE id_user=? and password=?";
+		$param = array($this->UserId,$password);
+		if($DB->LoadData($request,$param)!=null){
+			return 0;
+		}
+		else
+			return -1;
+	}
+
+	public function ChangePassword($password)
+	{
+		$DB = new DataBase();
+		$request = "UPDATE `user` SET `password`=? WHERE `id_user`=?";
+		$param = array($password,$this->UserId);
+		return $DB->ExecuteData($request,$param);
 	}
 
 	
 
-	public function Find($Id)
+	public function Find($id)
 	{
-		
+		$DB = new DataBase();
+		$request = "SELECT `id_user`, `full_name`, `email`, `avatar`, `username`, `lastconnection` FROM `user` WHERE `id_user`=? ";
+		$param = array($id);
+		return $DB->LoadData($request,$param);
 	}
 
 

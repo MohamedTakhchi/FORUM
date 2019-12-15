@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 11, 2019 at 10:31 PM
+-- Generation Time: Dec 15, 2019 at 09:01 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -35,7 +35,24 @@ CREATE TABLE IF NOT EXISTS `category` (
   `description` text,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_category`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `category`
+--
+
+INSERT INTO `category` (`id_category`, `name`, `description`, `created_at`) VALUES
+(1, 'Installation Windows', NULL, '2019-12-14 18:32:28'),
+(2, 'Installation Linux', NULL, '2019-12-14 18:32:43'),
+(3, 'Protocoles Réseaux', NULL, '2019-12-14 18:33:04'),
+(4, 'JAVA', NULL, '2019-12-14 18:34:09'),
+(5, 'PHP', NULL, '2019-12-14 18:34:15'),
+(6, 'Développement Web', NULL, '2019-12-14 18:34:37'),
+(7, 'Développement Mobile', NULL, '2019-12-14 18:34:53'),
+(8, 'Python', NULL, '2019-12-14 18:35:03'),
+(9, 'MySQL', NULL, '2019-12-14 18:35:31'),
+(10, 'Oracle', NULL, '2019-12-14 18:35:47'),
+(11, 'PostgreSQL', '                          ', '2019-12-15 12:54:05');
 
 -- --------------------------------------------------------
 
@@ -53,7 +70,30 @@ CREATE TABLE IF NOT EXISTS `comment` (
   PRIMARY KEY (`id_comment`),
   KEY `fk_comment_user` (`id_user`),
   KEY `fk_comment_topic` (`id_topic`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `saved`
+--
+
+DROP TABLE IF EXISTS `saved`;
+CREATE TABLE IF NOT EXISTS `saved` (
+  `id_save` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `id_topic` int(11) NOT NULL,
+  PRIMARY KEY (`id_save`),
+  KEY `fk_saved_user` (`id_user`),
+  KEY `fk_saved_topic` (`id_topic`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `saved`
+--
+
+INSERT INTO `saved` (`id_save`, `id_user`, `id_topic`) VALUES
+(4, 1, 7);
 
 -- --------------------------------------------------------
 
@@ -73,7 +113,14 @@ CREATE TABLE IF NOT EXISTS `topic` (
   PRIMARY KEY (`id_topic`),
   KEY `fk_topic_user` (`id_user`),
   KEY `fk_topic_category` (`id_category`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `topic`
+--
+
+INSERT INTO `topic` (`id_topic`, `title`, `body`, `image`, `created_at`, `id_user`, `id_category`) VALUES
+(7, 'post 1', '                     can\'t boot usb     ', NULL, '2019-12-15 20:59:36', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -91,15 +138,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(300) NOT NULL,
   `lastconnection` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id_user`, `full_name`, `email`, `avatar`, `username`, `password`, `lastconnection`) VALUES
-(1, 'Takhchi', 'mohamed-_-takhchi@live.fr', 'fffffff', 'takhchi.mohamed', 'ffff', '2019-12-11 21:52:33'),
-(2, 'Takhchi', 'uhiuguyfedfc\'fuiiu fufheyuf', 'dvcdf', 'rfef\"efe\" f\"', 'werfrf', '2019-12-11 21:56:23');
+(1, 'Takhchi mohamed', 'mohamed-_-takhchi@live.fr', 'default.png', 'takhchi.mohamed', '123456', '2019-12-14 18:59:31');
 
 --
 -- Constraints for dumped tables
@@ -111,6 +157,13 @@ INSERT INTO `user` (`id_user`, `full_name`, `email`, `avatar`, `username`, `pass
 ALTER TABLE `comment`
   ADD CONSTRAINT `fk_comment_topic` FOREIGN KEY (`id_topic`) REFERENCES `topic` (`id_topic`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_comment_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `saved`
+--
+ALTER TABLE `saved`
+  ADD CONSTRAINT `fk_saved_topic` FOREIGN KEY (`id_topic`) REFERENCES `topic` (`id_topic`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_saved_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `topic`
